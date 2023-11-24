@@ -11,7 +11,7 @@ const Modal = props => {
     }
   };
 
-  useEffect(() => {
+  useEffect((props) => {
     const handleKeyDown = event => {
       if (event.code === 'Escape') {
         props.closeModal();
