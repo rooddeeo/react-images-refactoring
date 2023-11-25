@@ -1,6 +1,8 @@
 import ImageGallery from '../ImageGallery/ImageGallery.jsx';
 import css from './ImageGalleryItem.module.css';
 
+
+
 const ImageGalleryItem = ({ gallery, handleOpenModal }) => {
   const galleryList = gallery.map(card => (
     <li className={css.galleryItem} key={card.id}>

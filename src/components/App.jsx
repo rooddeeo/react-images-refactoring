@@ -12,7 +12,7 @@ class App extends Component {
   state = {
     isLoader: false,
     errorBackEnd: '',
-    gallery: '',
+    gallery: [],
     search: '',
     showModal: false,
     modalImageUrl: '',
@@ -29,6 +29,7 @@ class App extends Component {
   }
 
   onSubmit = ({ search }) => {
+    console.log({ search })
     this.setState({ search, page: 1 });
   };
 
