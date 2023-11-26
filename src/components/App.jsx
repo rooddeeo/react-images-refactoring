@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGalleryItem from './ImageGalleryItem/ImageGalleryItem.jsx';
 import getGallery from '../api/gallery.js';
@@ -8,97 +8,76 @@ import ErrorBackEnd from './ErrorBackEnd/ErrorBackEnd.jsx';
 import Modal from './Modal/Modal';
 import css from './App.module.css';
 
-class App extends Component {
-  state = {
-    isLoader: false,
-    errorBackEnd: '',
-    gallery: [],
-    search: '',
-    showModal: false,
-    modalImageUrl: '',
-    modalImageTags: '',
-    page: 1,
-    loadMore: false,
+const App = () => {
+  const [isLoader, setIsLoader] = useState(false);
+  const [errorBackEnd, setErrorBackEnd] = useState('');
+  const [gallery, setGallery] = useState([]);
+  const [search, setSearch] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [modalImageUrl, setModalImageUrl] = useState('');
+  const [modalImageTags, setModalImageTags] = useState('');
+  const [page, setPage] = useState(1);
+  const [loadMore, setLoadMore] = useState(false);
+
+  const onSubmit = ({ search }) => {
+    setSearch(search);
+    setPage(1);
   };
 
-  componentDidUpdate(_, prevState) {
-    const { search, page } = this.state;
-    if (prevState.search !== search || prevState.page !== page) {
-      this.handleGallery(search, page);
+  useEffect(() => {
+    if (search && page) {
+      const handleGallery = async (search, page) => {
+        try {
+          setIsLoader(true);
+          if (page === 1) {
+            setGallery([]);
+          }
+          const data = await getGallery(search, page);
+          setGallery(prev => [...prev, ...data.hits]);
+          setLoadMore(page < Math.ceil(data.totalHits / 12));
+          setErrorBackEnd('');
+        } catch (error) {
+          setErrorBackEnd(error.message);
+        } finally {
+          setIsLoader(false);
+        }
+      };
+      handleGallery(search, page);
     }
-  }
+  }, [search, page]);
 
-  onSubmit = ({ search }) => {
-    console.log({ search })
-    this.setState({ search, page: 1 });
+  const onLoadMore = () => {
+    setPage(prev => prev + 1);
   };
 
-  handleGallery = async (search, page) => {
-    try {
-      this.setState({ isLoader: true });
-      if (page === 1) {
-        this.setState({ gallery: [] });
-      }
-      const data = await getGallery(search, page);
-      this.setState(prev => ({
-        gallery: [...prev.gallery, ...data.hits],
-        loadMore: page < Math.ceil(data.totalHits / 12),
-        error: '',
-      }));
-    } catch (error) {
-      this.setState({ errorBackEnd: error.message });
-    } finally {
-      this.setState({ isLoader: false });
-    }
+  const handleOpenModal = (largeImageURL, tags) => {
+    setShowModal(true);
+    setModalImageUrl(largeImageURL);
+    setModalImageTags(tags);
   };
 
-  onLoadMore = () => {
-    this.setState(prev => ({ page: prev.page + 1 }));
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
-  handleOpenModal = (largeImageURL, tags) => {
-    this.setState({ showModal: true });
-    this.setState(prev => ({
-      modalImageUrl: (prev.modalImageUrl = largeImageURL),
-    }));
-    this.setState(prev => ({ modalImageTags: (prev.modalImageTags = tags) }));
-  };
+  return (
+    <div className={css.container}>
+      {isLoader && <Loader />}
+      {errorBackEnd && <ErrorBackEnd errorBackEnd={errorBackEnd} />}
+      <Searchbar onSubmit={onSubmit} />
+      {gallery && (
+        <ImageGalleryItem gallery={gallery} handleOpenModal={handleOpenModal} />
+      )}
+      {loadMore && <Button onLoadMore={onLoadMore} />}
+      {showModal && (
+        <Modal
+          closeModal={handleCloseModal}
+          largeImage={modalImageUrl}
+          tags={modalImageTags}
+        />
+      )}
+    </div>
+  );
+};
 
-  handleCloseModal = () => {
-    this.setState({ showModal: false });
-  };
-
-  render() {
-    const {
-      isLoader,
-      errorBackEnd,
-      gallery,
-      loadMore,
-      showModal,
-      modalImageUrl,
-      modalImageTags,
-    } = this.state;
-    return (
-      <div className={css.container}>
-        {isLoader && <Loader />}
-        {errorBackEnd && <ErrorBackEnd errorBackEnd={errorBackEnd} />}
-        <Searchbar onSubmit={this.onSubmit} />
-        {gallery && (
-          <ImageGalleryItem
-            gallery={gallery}
-            handleOpenModal={this.handleOpenModal}
-          />
-        )}
-        {loadMore && <Button onLoadMore={this.onLoadMore} />}
-        {showModal && (
-          <Modal
-            closeModal={this.handleCloseModal}
-            largeImage={modalImageUrl}
-            tags={modalImageTags}
-          />
-        )}
-      </div>
-    );
-  }
-}
 export default App;

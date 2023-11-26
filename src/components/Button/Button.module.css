@@ -1,14 +1,31 @@
 .button {
   cursor: pointer;
   border-radius: 5px;
-  background-color: darkblue;
+  border: 1px solid #5cd5fb;
+  background-color: #282828;
   text-transform: lowercase;
   font-weight: 600;
-  padding: 10px 15px;
-  margin-bottom: 10px;
-  color: white;
+  padding: 7px 15px;
+  margin-bottom: 20px;
+  color: #5cd5fb;
   width: 150px;
   margin-top: 20px;
+}
+
+.button:hover {
+  transition: box-shadow 0.3s ease;
+  box-shadow: 0px 2px 4px -1px rgba(255, 255, 255, 0.2),
+    0px 4px 5px 0px rgba(255, 255, 255, 0.14),
+    0px 1px 10px 0px rgba(255, 255, 255, 0.12);
+}
+
+.button:focus {
+  border: 3px solid #5cd5fb;
+  outline: none;
+  transition: box-shadow 0.3s ease;
+  box-shadow: 0px 2px 4px -1px rgba(255, 255, 255, 0.2),
+    0px 4px 5px 0px rgba(255, 255, 255, 0.14),
+    0px 1px 10px 0px rgba(255, 255, 255, 0.12);
 }
 
 .hidden {

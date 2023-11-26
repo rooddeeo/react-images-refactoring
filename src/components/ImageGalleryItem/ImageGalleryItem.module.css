@@ -20,6 +20,15 @@
   cursor: zoom-in;
 }
 
+.galleryItemLink:hover {
+  border: 1px solid #5cd5fb;
+}
+
+.galleryItemLink:focus {
+  border: 1px solid #5cd5fb;
+  outline: none;
+}
+
 .galleryItemImg {
   height: 100%;
   width: 100%;
