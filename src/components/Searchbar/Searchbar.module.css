@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -34,7 +34,6 @@
 
 .searchbar {
   width: 100%;
-  background-color: #282828;
   border-bottom: 1px solid #5cd5fb;
   padding-top: 15px;
   padding-bottom: 15px;
@@ -45,9 +44,10 @@
   border: 1px solid #5cd5fb;
   color: #5cd5fb;
   background-color: #282828;
-  width: 350px;
+  min-width: 250px;
+  max-width: 350px;
   height: 30px;
-  margin-right: 10px;
+  margin-bottom: 15px;
 }
 
 input::placeholder {
@@ -57,4 +57,21 @@ input::placeholder {
 .input:focus {
   border: 3px solid #5cd5fb;
   outline: none;
+}
+
+@media screen and (min-width: 375px) {
+  .input {
+    max-width: 300px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .container {
+    flex-direction: row;
+  }
+
+  .input {
+    margin-right: 10px;
+    margin-bottom: 0;
+  }
 }
